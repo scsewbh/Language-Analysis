@@ -1,13 +1,18 @@
+import numpy as np
+from sklearn.metrics.pairwise import cosine_similarity
+import gensim
+from gensim.models import FastText
 from re import sub
 from gensim.utils import simple_preprocess
-import numpy as np
+from gensim.test.utils import common_texts
+from gensim.models import word2vec
+from gensim.models import Word2Vec
 
-query_string = 'planets'
-documents = ['mars', 'fruit']
+#query_string = 'laryngeal'
+#documents = ['Cormack and Lehane grade 3', 'myocardial contusion']
 
-query_string = 'Convalescence after chemotherapy (finding)'
-
-documents = ['Convalescence after radiotherapy (finding)', 'Convalescence after psychotherapy (finding)']
+query_string = 'chemotherapy'
+documents = ['radiotherapy', 'psychotherapy']
 
 stopwords = ['the', 'and', 'are', 'a']
 
@@ -32,14 +37,15 @@ from gensim.similarities import SparseTermSimilarityMatrix
 from gensim.similarities import SoftCosineSimilarity
 
 # Load the model: this is a big file, can take a while to download and open
-glove = api.load("glove-wiki-gigaword-50")    
+glove = api.load("glove-wiki-gigaword-100")
+print(glove)
 similarity_index = WordEmbeddingSimilarityIndex(glove)
 
 # Build the term dictionary, TF-idf model
 dictionary = Dictionary(corpus+[query])
 tfidf = TfidfModel(dictionary=dictionary)
 
-# Create the term similarity matrix.  
+# Create the term similarity matrix.
 similarity_matrix = SparseTermSimilarityMatrix(similarity_index, dictionary, tfidf)
 
 # Compute Soft Cosine Measure between the query and the documents.
@@ -56,6 +62,3 @@ doc_similarity_scores = index[query_tf]
 sorted_indexes = np.argsort(doc_similarity_scores)[::-1]
 for idx in sorted_indexes:
     print(f'{idx} \t {doc_similarity_scores[idx]:0.3f} \t {documents[idx]}')
-
-# 1    0.688    tomatoes are actually fruit
-# 0    0.000    cars drive on the road
