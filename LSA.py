@@ -192,7 +192,7 @@ def Top10matches_LSA_MODEL1(lsa_sims):
     print("For LSA\n")
     print(" Top 10 matches for %sth document: %s"%(i,documents_list[i]))
     lsa_sims = sorted(enumerate(lsa_sims), key=lambda item: -item[1])
-    for doc_position, doc_score in lsa_sims[:15]:
+    for doc_position, doc_score in lsa_sims[:20]:
         MODEL1[documents_list[doc_position]] = doc_score
     print(MODEL1)
     #return MODEL1
@@ -202,7 +202,7 @@ def Top10matches_LogEntropy_LSA_MODEL2(logentropy_lsa_sims):
     print("For LogEntropy LSA\n")
     print(" Top 10 matches for %sth document: %s"%(i,documents_list[i]))
     logentropy_lsa_sims = sorted(enumerate(logentropy_lsa_sims), key=lambda item: -item[1])
-    for doc_position, doc_score in logentropy_lsa_sims[:15]:
+    for doc_position, doc_score in logentropy_lsa_sims[:20]:
         MODEL2[documents_list[doc_position]] = doc_score
     print(MODEL2)
     #return MODEL2
@@ -213,7 +213,7 @@ def intersection(m1, m2):
     #print(inters)
     for term in inters:
         ratio = similar(phrase, term)
-        common[term] = MODEL1[term]*0.45 + MODEL2[term]*0.45 + ratio*0.10
+        common[term] = MODEL1[term]*0.15 + MODEL2[term]*0.15 + ratio*0.70
     print(common)
     common = dict(sorted(common.items(), key=lambda item: item[1], reverse=True)) #SORTING
     print(common)
@@ -241,7 +241,7 @@ Top10matches_LSA(lsa_sims)
 Top10matches_LogEntropy_LSA(logentropy_lsa_sims)
 '''
 
-phrase = "Convalescence after chemotherapy (finding)"
+phrase = "Increased placental secretion of chorionic gonadotropin (finding)"
 lsa_sims,logentropy_lsa_sims,i=getSims(find_index_from_document(phrase))
 Top10matches_LSA_MODEL1(lsa_sims)
 Top10matches_LogEntropy_LSA_MODEL2(logentropy_lsa_sims)
