@@ -22,7 +22,7 @@ def similar(a, b):
     return SequenceMatcher(None, a, b).ratio()
 
 def checkAllSyntax(a):
-    values = {} #index+1 is line number
+    values = {}
     for line in documents_list:
         values[line] = (similar(a, line))
 
@@ -31,4 +31,6 @@ def checkAllSyntax(a):
     for key, value in islice(res.items(), 10):
         print(value, key)
 
-checkAllSyntax("Increased placental secretion of chorionic gonadotropin (finding)")
+phrase = "myocardial infarction (finding)"
+print("\nORIGINAL:", phrase, "\n")
+checkAllSyntax(phrase)

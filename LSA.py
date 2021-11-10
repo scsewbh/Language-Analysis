@@ -93,7 +93,7 @@ def create_gensim_lsa_model(doc_clean,number_of_topics,words):
     dictionary,doc_term_matrix=prepare_corpus(doc_clean)
     # generate LSA model
     lsamodel = LsiModel(doc_term_matrix, num_topics=number_of_topics, id2word = dictionary)  # train model
-    print(lsamodel.print_topics(num_topics=number_of_topics, num_words=words))
+    #print(lsamodel.print_topics(num_topics=number_of_topics, num_words=words))
     return lsamodel,dictionary,doc_term_matrix
 
 def create_gensim_logentropy_lsa_model(doc_clean,number_of_topics,words):
@@ -107,7 +107,7 @@ def create_gensim_logentropy_lsa_model(doc_clean,number_of_topics,words):
     # generate LSA model
     logentropy= gensim.models.logentropy_model.LogEntropyModel(doc_term_matrix, normalize=True)
     logentropy_lsamodel = LsiModel(logentropy[doc_term_matrix], num_topics=number_of_topics, id2word = dictionary)  # train model
-    print(logentropy_lsamodel.print_topics(num_topics=number_of_topics, num_words=words))
+    #print(logentropy_lsamodel.print_topics(num_topics=number_of_topics, num_words=words))
     return logentropy_lsamodel,logentropy,dictionary,doc_term_matrix
 
 def compute_coherence_values(dictionary, doc_term_matrix, doc_clean, stop, start=2, step=3):
@@ -158,7 +158,7 @@ print(cor)"""
 
 # Show zeroth document's top similarity scoring words. (logentropy lsa seems best, as recommended by wikipedia)
 def getSims(i,lsa_index=lsa_index,logentropy_lsa_index=logentropy_lsa_index):
-    print(documents_list[i])
+    #print(documents_list[i])
     lsa_sims=lsa_index[lsa_model[doc_term_matrix[i]]]
     logentropy_lsa_sims = logentropy_lsa_index[logentropy_lsamodel[logentropy[doc_term_matrix[i]]]]  # perform a similarity query against the corpus
     return lsa_sims,logentropy_lsa_sims,i
@@ -188,23 +188,23 @@ def Top10matches_LogEntropy_LSA(logentropy_lsa_sims):
         count+=1
 
 def Top10matches_LSA_MODEL1(lsa_sims):
-    print("="*20)
-    print("For LSA\n")
-    print(" Top 10 matches for %sth document: %s"%(i,documents_list[i]))
+    #print("="*20)
+    #print("For LSA\n")
+    #print(" Top 10 matches for %sth document: %s"%(i,documents_list[i]))
     lsa_sims = sorted(enumerate(lsa_sims), key=lambda item: -item[1])
     for doc_position, doc_score in lsa_sims[:20]:
         MODEL1[documents_list[doc_position]] = doc_score
-    print(MODEL1)
+    #print(MODEL1)
     #return MODEL1
 
 def Top10matches_LogEntropy_LSA_MODEL2(logentropy_lsa_sims):
-    print("="*20)
-    print("For LogEntropy LSA\n")
-    print(" Top 10 matches for %sth document: %s"%(i,documents_list[i]))
+    #print("="*20)
+    #print("For LogEntropy LSA\n")
+    #print(" Top 10 matches for %sth document: %s"%(i,documents_list[i]))
     logentropy_lsa_sims = sorted(enumerate(logentropy_lsa_sims), key=lambda item: -item[1])
     for doc_position, doc_score in logentropy_lsa_sims[:20]:
         MODEL2[documents_list[doc_position]] = doc_score
-    print(MODEL2)
+    #print(MODEL2)
     #return MODEL2
 
 def intersection(m1, m2):
@@ -213,12 +213,15 @@ def intersection(m1, m2):
     #print(inters)
     for term in inters:
         ratio = similar(phrase, term)
-        common[term] = MODEL1[term]*0.15 + MODEL2[term]*0.15 + ratio*0.70
-    print(common)
+        val = (MODEL1[term]*0.45 + MODEL2[term]*0.45 + ratio*0.10)
+        if val > 1:
+            val = 1.0
+        common[term] = val
     common = dict(sorted(common.items(), key=lambda item: item[1], reverse=True)) #SORTING
-    print(common)
+    #print(common)
     for name, value in common.items():
-        print(value, name)
+        if name != phrase:
+            print(value, name)
 
 '''
 lsa_sims,logentropy_lsa_sims,i=getSims(10)
@@ -245,4 +248,5 @@ phrase = "Increased placental secretion of chorionic gonadotropin (finding)"
 lsa_sims,logentropy_lsa_sims,i=getSims(find_index_from_document(phrase))
 Top10matches_LSA_MODEL1(lsa_sims)
 Top10matches_LogEntropy_LSA_MODEL2(logentropy_lsa_sims)
+print("\nORIGINAL:", phrase, "\n")
 intersection(MODEL1, MODEL2)
