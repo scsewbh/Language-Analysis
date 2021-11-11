@@ -22,6 +22,8 @@ def similar(a, b):
     return SequenceMatcher(None, a, b).ratio()
 
 def checkAllSyntax(a):
+    if "(finding)" not in a:
+        a += " (finding)"
     values = {}
     for line in documents_list:
         values[line] = (similar(a, line))
@@ -31,6 +33,6 @@ def checkAllSyntax(a):
     for key, value in islice(res.items(), 10):
         print(value, key)
 
-phrase = "myocardial infarction (finding)"
+phrase = "Reading Spanish"
 print("\nORIGINAL:", phrase, "\n")
 checkAllSyntax(phrase)
